@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grow_pet/constants/colors.dart';
+import 'package:grow_pet/resource/auth_method.dart';
+import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/login/signin.dart';
-import 'package:grow_pet/screens/navbar/navbar.dart';
+import 'package:grow_pet/util/utils.dart';
 import 'package:grow_pet/widgets/textfield.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -13,9 +14,35 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController emailcontroller = TextEditingController();
-  final TextEditingController passwordcontroller = TextEditingController();
-  final TextEditingController usernamecontroller = TextEditingController();
+  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+  final TextEditingController _usernamecontroller = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailcontroller.dispose();
+    _passwordcontroller.dispose();
+    _usernamecontroller.dispose();
+  }
+
+  void signupUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUp(
+      username: _usernamecontroller.text,
+      email: _emailcontroller.text,
+      password: _passwordcontroller.text,
+    );
+    if (res != 'success') {
+      showSnackBar(res, context);
+    } else {}
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               TextFieldContainer(
                 hinttext: 'User Name',
-                controller: usernamecontroller,
+                controller: _usernamecontroller,
                 textInputType: TextInputType.text,
               ),
               SizedBox(
@@ -63,7 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               TextFieldContainer(
                 hinttext: 'Email Address',
-                controller: emailcontroller,
+                controller: _emailcontroller,
                 isPass: true,
                 textInputType: TextInputType.emailAddress,
               ),
@@ -72,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               TextFieldContainer(
                 hinttext: 'Password',
-                controller: passwordcontroller,
+                controller: _passwordcontroller,
                 textInputType: TextInputType.text,
               ),
               SizedBox(
@@ -81,12 +108,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 34.0.w),
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ButtonNavBar()));
-                  },
+                  //* signup user
+                  onTap: signupUser,
                   child: Container(
                     alignment: Alignment.center,
                     height: 58.h,
@@ -95,14 +118,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: pinkShade,
                       borderRadius: BorderRadius.circular(7.r),
                     ),
-                    child: Text(
-                      "Let's Sign up now",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16.sp,
-                          color: Colors.white,
-                          fontFamily: 'ArialBold'),
-                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            "Let's Sign up now",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16.sp,
+                                color: Colors.white,
+                                fontFamily: 'ArialBold'),
+                          ),
                   ),
                 ),
               ),

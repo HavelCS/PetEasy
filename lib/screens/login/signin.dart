@@ -1,8 +1,11 @@
+// ignore_for_file: unused_field, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grow_pet/constants/colors.dart';
+import 'package:grow_pet/resource/auth_method.dart';
+import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/login/signup.dart';
-import 'package:grow_pet/screens/navbar/navbar.dart';
+import 'package:grow_pet/util/utils.dart';
 import 'package:grow_pet/widgets/textfield.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -13,13 +16,30 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController emailcontroller = TextEditingController();
-  final TextEditingController passwordcontroller = TextEditingController();
+  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+  bool _isLoading = false;
   @override
   void dispose() {
     super.dispose();
-    emailcontroller.dispose();
-    passwordcontroller.dispose();
+    _emailcontroller.dispose();
+    _passwordcontroller.dispose();
+  }
+
+  void signIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().logInUser(
+        email: _emailcontroller.text, password: _passwordcontroller.text);
+    if (res == "success") {
+      // * navigate to the NavBar Screen
+    } else {
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -58,7 +78,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               TextFieldContainer(
                 hinttext: 'Email Address',
-                controller: emailcontroller,
+                controller: _emailcontroller,
                 textInputType: TextInputType.emailAddress,
               ),
               SizedBox(
@@ -66,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               TextFieldContainer(
                 hinttext: 'Password',
-                controller: passwordcontroller,
+                controller: _passwordcontroller,
                 isPass: true,
                 textInputType: TextInputType.text,
               ),
@@ -89,12 +109,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 34.0.w),
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ButtonNavBar()));
-                  },
+                  onTap: signIn,
                   child: Container(
                     alignment: Alignment.center,
                     height: 58.h,
@@ -103,14 +118,18 @@ class _SignInScreenState extends State<SignInScreen> {
                       color: pinkShade,
                       borderRadius: BorderRadius.circular(7.r),
                     ),
-                    child: Text(
-                      "Let's Sign in now",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16.sp,
-                          color: Colors.white,
-                          fontFamily: 'ArialBold'),
-                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            "Let's Sign in now",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16.sp,
+                                color: Colors.white,
+                                fontFamily: 'ArialBold'),
+                          ),
                   ),
                 ),
               ),
@@ -191,7 +210,6 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               GestureDetector(
                   onTap: () {
-                    
                     Navigator.push(
                         context,
                         MaterialPageRoute(

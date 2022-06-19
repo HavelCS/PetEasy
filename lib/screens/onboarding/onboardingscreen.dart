@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutable, avoid_unnecessary_containers, avoid_print, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grow_pet/constants/colors.dart';
+import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/login/signin.dart';
 import 'package:grow_pet/screens/onboarding/onboardingcontent.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grow_pet/constants/colors.dart';
+import 'package:grow_pet/util/colors.dart';
 
 class ListedWidget extends StatelessWidget {
   final String imagepath, name, location;

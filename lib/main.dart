@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/screens/login/signin.dart';
 import 'package:grow_pet/screens/navbar/navbar.dart';
+import 'package:grow_pet/screens/onboarding/intro.dart';
+import 'package:grow_pet/screens/splash/onboardingsplash.dart';
+import 'screens/onboarding/onboardingscreen.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,7 +66,7 @@ class MyApp extends StatelessWidget {
                       return const SignInScreen();
                     },
                   ),
-              'onboard': (context) => OnBoardingScreen(),
+              'onboard': (context) => const IntroScreen(),
             },
           );
         }));

@@ -8,7 +8,11 @@ class AuthMethods {
 
   //* SIGN UP METHOD
 
-  Future<String> signUp({required String email, username, password}) async {
+  Future<String> signUp({
+    required String email,
+    username,
+    password,
+  }) async {
     String res = "Some Error Occured";
 
     try {

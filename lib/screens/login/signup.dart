@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/resource/auth_method.dart';
+import 'package:grow_pet/screens/navbar/navbar.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/login/signin.dart';
 import 'package:grow_pet/util/utils.dart';
@@ -38,7 +39,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
     if (res != 'success') {
       showSnackBar(res, context);
-    } else {}
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ButtonNavBar(),
+        ),
+      );
+    }
     setState(() {
       _isLoading = false;
     });
@@ -91,13 +98,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextFieldContainer(
                 hinttext: 'Email Address',
                 controller: _emailcontroller,
-                isPass: true,
+                isPass: false,
                 textInputType: TextInputType.emailAddress,
               ),
               SizedBox(
                 height: 20.h,
               ),
               TextFieldContainer(
+                isPass: true,
                 hinttext: 'Password',
                 controller: _passwordcontroller,
                 textInputType: TextInputType.text,

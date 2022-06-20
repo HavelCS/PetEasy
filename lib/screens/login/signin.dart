@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/resource/auth_method.dart';
+import 'package:grow_pet/screens/navbar/navbar.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/login/signup.dart';
 import 'package:grow_pet/util/utils.dart';
@@ -26,14 +27,20 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordcontroller.dispose();
   }
 
-  void signIn() async {
+  void loginUser() async {
     setState(() {
       _isLoading = true;
     });
+
     String res = await AuthMethods().logInUser(
         email: _emailcontroller.text, password: _passwordcontroller.text);
+
     if (res == "success") {
-      // * navigate to the NavBar Screen
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const ButtonNavBar(),
+        ),
+      );
     } else {
       showSnackBar(res, context);
     }
@@ -109,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 34.0.w),
                 child: GestureDetector(
-                  onTap: signIn,
+                  onTap: loginUser,
                   child: Container(
                     alignment: Alignment.center,
                     height: 58.h,

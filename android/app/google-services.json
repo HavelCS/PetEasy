@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "520236258848",
+    "project_id": "growpet-89329",
+    "storage_bucket": "growpet-89329.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520236258848:android:7d7f2e72df2e2fe8c04e45",
+        "android_client_info": {
+          "package_name": "com.example.grow_pet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "520236258848-7cq16hf81kkp4vkvt76nrkkk9phit4ki.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grow_pet",
+            "certificate_hash": "4e2e8fd316977ae519790ff3af065049fce5310a"
+          }
+        },
+        {
+          "client_id": "520236258848-sh5uik60vqnsqldeck0as1tut0q4825v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzjDT2yRQ_XW7F7QX6qVhaWcAw6R5Y6VA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "520236258848-sh5uik60vqnsqldeck0as1tut0q4825v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -33,15 +33,15 @@ class AuthMethods {
             .collection('users')
             .doc(cred.user!.uid)
             .set(user.toJson());
-        res = "Account created";
+        res = "success";
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == "weak-password") {
-        res = "Create a stronger password";
+        res = "Create a strong password";
       } else if (err.code == "email-already-in-use") {
-        res = "Email Already in use";
+        res = "Email already in use";
       } else {
-        res = "Invalid email id";
+        res = "Invalid Email id";
       }
     } catch (error) {
       res = error.toString();
@@ -59,13 +59,13 @@ class AuthMethods {
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
         _auth.signInWithEmailAndPassword(email: email, password: password);
-        res = "Logged In";
+        res = "success";
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == "wrong-password") {
-        res = "Wrong Password";
+        res = "Wrong password";
       } else if (err.code == "user-not-found") {
-        res = "User Not Found";
+        res = "User not found";
       }
     } catch (error) {
       res = error.toString();

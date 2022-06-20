@@ -23,16 +23,9 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: AssetImage(
-                "assets/images/adoptionbackground.png",
-              )),
-        ),
         child: SingleChildScrollView(
           child: Stack(
             children: [

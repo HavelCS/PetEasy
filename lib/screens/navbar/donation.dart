@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/constants/categories.dart';
+import 'package:grow_pet/resource/auth_method.dart';
+import 'package:grow_pet/screens/login/signin.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/constants/donations.dart';
 import 'package:grow_pet/screens/navbar/details.dart';
@@ -35,12 +37,28 @@ class _DonationScreenState extends State<DonationScreen> {
     });
   }
 
+  signout() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: ((context, innerBoxIsScrolled) => [
               SliverAppBar(
+                  actions: [
+                    IconButton(
+                        onPressed: () async {
+                          await AuthMethods().signOut();
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => const SignInScreen()),
+                              (route) => false);
+                        },
+                        icon: const Icon(
+                          Icons.login_outlined,
+                          color: Colors.black,
+                        ))
+                  ],
                   automaticallyImplyLeading: false,
                   elevation: 0,
                   backgroundColor: const Color(0xffFAFAFA),

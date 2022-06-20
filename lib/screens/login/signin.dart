@@ -31,22 +31,22 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() {
       _isLoading = true;
     });
-
-    String res = await AuthMethods().logInUser(
+    String res = await AuthMethods().loginUser(
         email: _emailcontroller.text, password: _passwordcontroller.text);
+    if (res == 'success') {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const ButtonNavBar()),
+          (route) => false);
 
-    if (res == "success") {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const ButtonNavBar(),
-        ),
-      );
+      setState(() {
+        _isLoading = false;
+      });
     } else {
+      setState(() {
+        _isLoading = false;
+      });
       showSnackBar(res, context);
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override

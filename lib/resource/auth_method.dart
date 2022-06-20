@@ -56,14 +56,21 @@ class AuthMethods {
   }
 
   //* LOGIN METHOD
-
-  Future<String> logInUser(
-      {required String email, required String password}) async {
-    String res = "Some error occured";
+  Future<String> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    String res = "Some error Occurred";
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
-        _auth.signInWithEmailAndPassword(email: email, password: password);
+        // logging in user with email and password
+        await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
         res = "success";
+      } else {
+        res = "Please enter all the fields";
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == "wrong-password") {
@@ -71,11 +78,14 @@ class AuthMethods {
       } else if (err.code == "user-not-found") {
         res = "User not found";
       }
-    } catch (error) {
-      res = error.toString();
-      print(res);
+    } catch (err) {
+      return err.toString();
     }
-
     return res;
+  }
+
+  // * SIGN OUT METHOD
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 }

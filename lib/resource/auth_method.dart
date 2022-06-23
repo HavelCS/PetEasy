@@ -1,90 +1,86 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:grow_pet/model/user_model.dart' as model;
+import 'package:grow_pet/model/user_model.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  //* SIGN UP METHOD
-
-  Future<String> signUp({
-    required String email,
-    username,
-    password,
-  }) async {
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  // * signUp method for creating an user
+  Future<String> signUp(
+      {required String email,
+      required String password,
+      String? bio,
+      required String username}) async {
     String res = "Some Error Occured";
-
     try {
-      if (email.isNotEmpty || password.isNotEmpty || username.isNotEmpty) {
-        // * register an user
+      if (email.isNotEmpty || password.isNotEmpty) {
+        // * creates an user
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-        // * store user data in firebase
+        // * register the user in database
 
-        model.User user = model.User(
-            adoptionPets: [],
-            bio: '',
-            donationPets: [],
-            email: email,
-            uid: cred.user!.uid,
-            followers: [],
-            following: [],
-            username: username,
-            photoUrl: '');
-
-        await _firestore
+        UserModel user = UserModel(
+          username: username,
+          email: email,
+          uid: cred.user!.uid,
+          bio: bio,
+          followers: [],
+          following: [],
+        );
+        await _firebaseFirestore
             .collection('users')
             .doc(cred.user!.uid)
             .set(user.toJson());
+
         res = "success";
       }
     } on FirebaseAuthException catch (err) {
-      if (err.code == "weak-password") {
-        res = "Create a strong password";
-      } else if (err.code == "email-already-in-use") {
-        res = "Email already in use";
+      if (err.code == 'email-already-in-use') {
+        res = "email already in use";
+      } else if (err.code == "weak-password") {
+        res = 'Create a strong password';
       } else {
-        res = "Invalid Email id";
+        res = "Email id not valid";
       }
     } catch (error) {
       res = error.toString();
-      print(error);
     }
-
     return res;
   }
 
-  //* LOGIN METHOD
-  Future<String> loginUser({
-    required String email,
-    required String password,
-  }) async {
-    String res = "Some error Occurred";
+  // * LOGIN METHOD - helps the user to login into their account
+
+  Future<String> loginUser(
+      {required String email, required String password}) async {
+    String res = "Some error occured";
+
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
-        // logging in user with email and password
-        await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+        _auth.signInWithEmailAndPassword(email: email, password: password);
         res = "success";
-      } else {
-        res = "Please enter all the fields";
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == "wrong-password") {
-        res = "Wrong password";
+        res = "incorrect password";
       } else if (err.code == "user-not-found") {
-        res = "User not found";
+        res = "incorrec email id";
       }
-    } catch (err) {
-      return err.toString();
+    } catch (error) {
+      res = error.toString();
     }
+
     return res;
   }
 
-  // * SIGN OUT METHOD
+  // * get current user details
+
+  Future<UserModel> getDetails() async {
+    User currentUser = _auth.currentUser!;
+    DocumentSnapshot snapshot =
+        await _firebaseFirestore.collection('users').doc(currentUser.uid).get();
+    return UserModel.fromSnap(snapshot);
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }

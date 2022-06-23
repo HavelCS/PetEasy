@@ -1,13 +1,15 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers
 
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:grow_pet/provider/user_provider.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/navbar/chatscreen.dart';
 import 'package:grow_pet/screens/navbar/donation.dart';
 import 'package:grow_pet/screens/navbar/listedpets.dart';
 import 'package:grow_pet/screens/navbar/services.dart';
 import 'package:grow_pet/screens/navbar/settings.dart';
+import 'package:provider/provider.dart';
 
 class ButtonNavBar extends StatefulWidget {
   const ButtonNavBar({Key? key}) : super(key: key);
@@ -21,7 +23,19 @@ class _ButtonNavBarState extends State<ButtonNavBar> {
   int pressedButtonNo = 2;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   @override
+  void initState() {
+    super.initState();
+    addData();
+  }
+
+  void addData() async {
+    UserProvider userProvider = Provider.of(context, listen: false);
+    await userProvider.refreshUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // model.User _user = Provider.of<UserProvider>(context).getUser;
     final screens = [
       const ListedPets(),
       const ListServices(),

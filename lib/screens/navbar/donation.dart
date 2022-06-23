@@ -1,46 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/constants/categories.dart';
+import 'package:grow_pet/constants/donations.dart';
+import 'package:grow_pet/model/user_model.dart';
+import 'package:grow_pet/provider/user_provider.dart';
 import 'package:grow_pet/resource/auth_method.dart';
 import 'package:grow_pet/screens/login/signin.dart';
-import 'package:grow_pet/util/colors.dart';
-import 'package:grow_pet/constants/donations.dart';
 import 'package:grow_pet/screens/navbar/details.dart';
+import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/widgets/donationCard.dart';
+import 'package:provider/provider.dart';
 
 class DonationScreen extends StatefulWidget {
-  const DonationScreen({Key? key}) : super(key: key);
+  const DonationScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<DonationScreen> createState() => _DonationScreenState();
 }
 
 class _DonationScreenState extends State<DonationScreen> {
-  String name = "";
   int colorindex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    getUserName();
-  }
-
-  void getUserName() async {
-    DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    setState(() {
-      name = (snap.data() as Map<String, dynamic>)['username'];
-    });
-  }
-
-  signout() {}
-
   @override
   Widget build(BuildContext context) {
+    final UserModel _user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: ((context, innerBoxIsScrolled) => [
@@ -67,7 +53,7 @@ class _DonationScreenState extends State<DonationScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Hello $name,",
+                        _user.uid,
                         style: TextStyle(
                             fontFamily: 'RobotoRegular',
                             color: Colors.black,

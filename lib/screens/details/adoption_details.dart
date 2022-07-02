@@ -85,7 +85,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       height: 282.h,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage(widget.imagepath)),
+                              image: NetworkImage(widget.imagepath),
+                              fit: BoxFit.cover),
                           borderRadius: BorderRadius.circular(14.r)),
                     ),
                   ),
@@ -102,6 +103,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: 24.0.h),

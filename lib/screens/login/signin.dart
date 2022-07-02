@@ -35,7 +35,9 @@ class _SignInScreenState extends State<SignInScreen> {
         email: _emailcontroller.text, password: _passwordcontroller.text);
     if (res == 'success') {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const ButtonNavBar()),
+          MaterialPageRoute(
+            builder: (context) => const ButtonNavBar(),
+          ),
           (route) => false);
 
       setState(() {

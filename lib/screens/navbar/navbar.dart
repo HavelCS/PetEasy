@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:grow_pet/provider/user_provider.dart';
@@ -28,18 +29,19 @@ class _ButtonNavBarState extends State<ButtonNavBar> {
     addData();
   }
 
-  void addData() async {
+  addData() async {
     UserProvider userProvider = Provider.of(context, listen: false);
     await userProvider.refreshUser();
   }
 
   @override
   Widget build(BuildContext context) {
-    // model.User _user = Provider.of<UserProvider>(context).getUser;
     final screens = [
       const ListedPets(),
       const ListServices(),
-      const DonationScreen(),
+      AdoptionScreen(
+        uid: FirebaseAuth.instance.currentUser!.uid,
+      ),
       const ChatScreen(),
       const SettingScreen(),
     ];

@@ -30,133 +30,128 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                controller: _controller,
-                itemCount: contents.length,
-                onPageChanged: (int index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
-                },
-                itemBuilder: (_, i) {
-                  return Padding(
-                    padding: EdgeInsets.only(top: 61.h),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 61.0),
-                          child: Container(
-                            width: 476.h,
-                            height: 317.w,
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        "assets/images/onboarding.png"),
-                                    fit: BoxFit.cover)),
-                          ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: contents.length,
+              onPageChanged: (int index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              itemBuilder: (_, i) {
+                return Padding(
+                  padding: EdgeInsets.only(top: 61.h),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 61.0),
+                        child: Container(
+                          width: 476.h,
+                          height: 317.w,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/images/onboarding.png"),
+                                  fit: BoxFit.cover)),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: 71.h,
-                            left: 56.w,
-                            right: 57.w,
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 39.h),
-                                child: Text(
-                                  "GrowPet",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: pinkShade,
-                                      fontSize: 42.sp,
-                                      fontFamily: 'HelveticaBold'),
-                                ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 71.h,
+                          left: 56.w,
+                          right: 57.w,
+                        ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 39.h),
+                              child: Text(
+                                "GrowPet",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: pinkShade,
+                                    fontSize: 42.sp,
+                                    fontFamily: 'HelveticaBold'),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 18.h),
-                                child: Text(
-                                  contents[i].title,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18.sp,
-                                      fontFamily: 'ArialBold'),
-                                ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 18.h),
+                              child: Text(
+                                contents[i].title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18.sp,
+                                    fontFamily: 'ArialBold'),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 50.h),
-                                child: Text(
-                                  contents[i].subtitle,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: const Color(0xff909090),
-                                      fontSize: 14.sp,
-                                      fontFamily: 'HelveticaRegular'),
-                                ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 50.h),
+                              child: Text(
+                                contents[i].subtitle,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: const Color(0xff909090),
+                                    fontSize: 14.sp,
+                                    fontFamily: 'HelveticaRegular'),
                               ),
-                              Container(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  contents.length,
-                                  (index) => buildDot(index, context),
-                                ),
-                              )),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                contents.length,
+                                (index) => buildDot(index, context),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 26.w, vertical: 38.h),
+              child: InkWell(
+                onTap: () async {
+                  if (currentIndex == contents.length - 1) {
+                    // await _storeOnboardInfo();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignInScreen()));
+                  }
+
+                  _controller.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.bounceIn,
                   );
                 },
-              ),
-            ),
-            Padding(
-                padding: EdgeInsets.symmetric(horizontal: 26.w, vertical: 38.h),
-                child: InkWell(
-                  onTap: () async {
-                    print(currentIndex);
-                    if (currentIndex == contents.length - 1) {
-                      // await _storeOnboardInfo();
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInScreen()));
-                    }
-
-                    _controller.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.bounceIn,
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 346.w,
-                    height: 58.h,
-                    decoration: BoxDecoration(
-                        color: pinkShade,
-                        borderRadius: BorderRadius.circular(7)),
-                    child: Text(
-                      currentIndex == contents.length - 1
-                          ? "Let’s Spread Love"
-                          : "Next",
-                      style: TextStyle(
-                          letterSpacing: 0.005,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18.sp,
-                          color: Colors.white,
-                          fontFamily: 'ArialBold'), // this is a comment
-                    ),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 346.w,
+                  height: 58.h,
+                  decoration: BoxDecoration(
+                      color: pinkShade, borderRadius: BorderRadius.circular(7)),
+                  child: Text(
+                    currentIndex == contents.length - 1
+                        ? "Let’s Spread Love"
+                        : "Next",
+                    style: TextStyle(
+                        letterSpacing: 0.005,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 18.sp,
+                        color: Colors.white,
+                        fontFamily: 'ArialBold'), // this is a comment
                   ),
-                )),
-          ],
-        ),
+                ),
+              )),
+        ],
       ),
     );
   }

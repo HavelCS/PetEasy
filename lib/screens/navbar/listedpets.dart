@@ -13,7 +13,6 @@ class ListedPets extends StatefulWidget {
 class _ListedPetsState extends State<ListedPets> {
   @override
   Widget build(BuildContext context) {
-    final orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
           actions: [
@@ -63,7 +62,8 @@ class _ListedPetsState extends State<ListedPets> {
             ],
           )),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding:
+            const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
         child: GridView.builder(
           shrinkWrap: true,
           itemCount: listedpets.length,

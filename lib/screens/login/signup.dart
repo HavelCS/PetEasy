@@ -1,7 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/resource/auth_method.dart';
-import 'package:grow_pet/screens/navbar/navbar.dart';
+import 'package:grow_pet/screens/navbar/responsive.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/login/signin.dart';
 import 'package:grow_pet/util/utils.dart';
@@ -42,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const ButtonNavBar(),
+          builder: (context) => const ResponsiveScreen(),
         ),
       );
     }

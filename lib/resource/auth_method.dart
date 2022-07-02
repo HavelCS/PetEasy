@@ -13,7 +13,7 @@ class AuthMethods {
       required String username}) async {
     String res = "Some Error Occured";
     try {
-      if (email.isNotEmpty || password.isNotEmpty) {
+      if (email.isNotEmpty || password.isNotEmpty || username.isNotEmpty) {
         // * creates an user
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
@@ -50,25 +50,25 @@ class AuthMethods {
 
   // * LOGIN METHOD - helps the user to login into their account
 
-  Future<String> loginUser(
-      {required String email, required String password}) async {
-    String res = "Some error occured";
-
+  Future<String> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    String res = "Some error Occurred";
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
-        _auth.signInWithEmailAndPassword(email: email, password: password);
+        // logging in user with email and password
+        await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
         res = "success";
+      } else {
+        res = "Please enter all the fields";
       }
-    } on FirebaseAuthException catch (err) {
-      if (err.code == "wrong-password") {
-        res = "incorrect password";
-      } else if (err.code == "user-not-found") {
-        res = "incorrec email id";
-      }
-    } catch (error) {
-      res = error.toString();
+    } catch (err) {
+      return err.toString();
     }
-
     return res;
   }
 

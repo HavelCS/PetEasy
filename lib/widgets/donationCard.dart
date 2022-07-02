@@ -128,6 +128,8 @@ class _DonationRequestCardState extends State<DonationRequestCard> {
                                   child: Center(
                                     child: Text(
                                       widget.breed,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: const Color(0xffC262FD),
                                           fontSize: 14.sp,

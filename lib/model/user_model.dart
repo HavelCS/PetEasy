@@ -6,7 +6,7 @@ class UserModel {
   List? followers, following;
   //*  UserModel constructor
   UserModel(
-      {required this.bio,
+      {this.bio,
       required this.email,
       this.followers,
       this.following,

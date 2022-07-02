@@ -1,49 +1,99 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, await_only_futures, unnecessary_null_comparison, prefer_is_empty
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/constants/categories.dart';
 import 'package:grow_pet/constants/donations.dart';
-import 'package:grow_pet/model/user_model.dart';
-import 'package:grow_pet/provider/user_provider.dart';
-import 'package:grow_pet/resource/auth_method.dart';
-import 'package:grow_pet/screens/login/signin.dart';
-import 'package:grow_pet/screens/navbar/details.dart';
+import 'package:grow_pet/screens/details/adoption_details.dart';
 import 'package:grow_pet/util/colors.dart';
+import 'package:grow_pet/screens/forms/adoption_form.dart';
+import 'package:grow_pet/util/utils.dart';
 import 'package:grow_pet/widgets/donationCard.dart';
-import 'package:provider/provider.dart';
 
-class DonationScreen extends StatefulWidget {
-  const DonationScreen({
-    Key? key,
-  }) : super(key: key);
+class AdoptionScreen extends StatefulWidget {
+  final String uid;
+  const AdoptionScreen({Key? key, required this.uid}) : super(key: key);
 
   @override
-  State<DonationScreen> createState() => _DonationScreenState();
+  State<AdoptionScreen> createState() => _AdoptionScreenState();
 }
 
-class _DonationScreenState extends State<DonationScreen> {
+class _AdoptionScreenState extends State<AdoptionScreen> {
+  var userData = {};
+  var username = '';
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      var userSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+      userData = userSnap.data()!;
+      username = userData['username'];
+    } catch (e) {
+      showSnackBar(
+        e.toString(),
+        context,
+      );
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  final CollectionReference _adoptions =
+      FirebaseFirestore.instance.collection('adoptions');
   int colorindex = 0;
   @override
   Widget build(BuildContext context) {
-    final UserModel _user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: ((context, innerBoxIsScrolled) => [
               SliverAppBar(
                   actions: [
-                    IconButton(
-                        onPressed: () async {
-                          await AuthMethods().signOut();
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => const SignInScreen()),
-                              (route) => false);
+                    Padding(
+                      padding: EdgeInsets.only(left: 22.w),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const CustomDialogBox(
+                              labeltext: 'Donate Blood',
+                              title: 'Request donation',
+                              subtitle: 'Please fill in all details below.',
+                            );
+                          }));
                         },
-                        icon: const Icon(
-                          Icons.login_outlined,
-                          color: Colors.black,
-                        ))
+                        child: Container(
+                          height: 40,
+                          width: 134,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(62)),
+                          child: const Center(
+                            child: Text(
+                              "+ req. donation",
+                              style: TextStyle(
+                                  color: pinkShade,
+                                  fontFamily: 'RobotoRegular',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                   automaticallyImplyLeading: false,
                   elevation: 0,
@@ -53,10 +103,10 @@ class _DonationScreenState extends State<DonationScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        _user.uid,
+                        'Hello $username,',
                         style: TextStyle(
                             fontFamily: 'RobotoRegular',
-                            color: Colors.black,
+                            color: const Color(0xff45485B),
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w500),
                       ),
@@ -156,40 +206,60 @@ class _DonationScreenState extends State<DonationScreen> {
                             ),
                           );
                         }))),
-                ListView.builder(
-                    itemCount: donations.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: ((context, index) {
-                      var donation = donations[index];
-                      return GestureDetector(
-                        onTap: (() {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DetailsScreen(
-                                        age: donation.age,
-                                        breed: donation.breed,
-                                        gender: donation.gender,
-                                        location: donation.location,
-                                        name: donation.petName,
-                                        imagepath: donation.userpfp,
-                                        description: donation.description,
-                                        ownerName: donation.ownerName,
-                                        userpfp: donation.userpfp,
-                                      )));
-                        }),
-                        child: DonationRequestCard(
-                          age: donation.age,
-                          breed: donation.breed,
-                          gender: donation.gender,
-                          location: donation.location,
-                          name: donation.petName,
-                          imagepath: donation.userpfp,
-                        ),
-                      );
-                    }))
+                SizedBox(
+                  height: 41.h,
+                ),
+                StreamBuilder(
+                    stream: _adoptions.snapshots(),
+                    builder:
+                        (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                      if (streamSnapshot.hasData) {
+                        return ListView.builder(
+                            padding: const EdgeInsets.only(top: 0, bottom: 50),
+                            itemCount: streamSnapshot.data!.docs.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemBuilder: ((context, index) {
+                              final DocumentSnapshot documentSnapshot =
+                                  streamSnapshot.data!.docs[index];
+                              var donation = donations[index];
+                              return GestureDetector(
+                                onTap: (() {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailsScreen(
+                                                age: documentSnapshot['age'],
+                                                breed:
+                                                    documentSnapshot['breed'],
+                                                gender:
+                                                    documentSnapshot['gender'],
+                                                location: donation.location,
+                                                name:
+                                                    documentSnapshot['petName'],
+                                                imagepath: documentSnapshot[
+                                                    'petImage'],
+                                                description: documentSnapshot[
+                                                    'description'],
+                                                ownerName: documentSnapshot[
+                                                    'ownerName'],
+                                                userpfp: donation.userpfp,
+                                              )));
+                                }),
+                                child: DonationRequestCard(
+                                    age: documentSnapshot['age'],
+                                    breed: documentSnapshot['breed'],
+                                    gender: documentSnapshot['gender'],
+                                    location: donation.location,
+                                    name: documentSnapshot['petName'],
+                                    imagepath: documentSnapshot['petImage']),
+                              );
+                            }));
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    })
               ],
             ),
           ),

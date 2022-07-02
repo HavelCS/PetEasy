@@ -1,4 +1,4 @@
-# grow_pet
+# PetEasy
 
 A new Flutter project.
 

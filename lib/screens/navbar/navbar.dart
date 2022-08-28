@@ -6,7 +6,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:grow_pet/provider/user_provider.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:grow_pet/screens/navbar/chatscreen.dart';
-import 'package:grow_pet/screens/navbar/donation.dart';
+import 'package:grow_pet/screens/navbar/adoption.dart';
 import 'package:grow_pet/screens/navbar/listedpets.dart';
 import 'package:grow_pet/screens/navbar/services.dart';
 import 'package:grow_pet/screens/navbar/settings.dart';

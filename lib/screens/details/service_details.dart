@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:grow_pet/model/user_model.dart';
+import 'package:grow_pet/provider/user_provider.dart';
+import 'package:grow_pet/resource/firestore_method.dart';
 import 'package:grow_pet/util/colors.dart';
+import 'package:grow_pet/util/utils.dart';
+import 'package:provider/provider.dart';
 
 class ServiceDetails extends StatefulWidget {
   final List tags;
-  final String description;
-  const ServiceDetails(
-      {Key? key, required this.tags, required this.description})
+  final snap;
+
+  const ServiceDetails({Key? key, this.snap, required this.tags})
       : super(key: key);
 
   @override
@@ -23,8 +28,39 @@ class _ServiceDetailsState extends State<ServiceDetails> {
     reviewController.dispose();
   }
 
+  void postComment(
+    String uid,
+    String name,
+  ) async {
+    try {
+      String res = await FireStoreMethods().postComment(
+        widget.snap['postId'].toString(),
+        reviewController.text,
+        uid,
+        name,
+      );
+
+      if (res != 'success') {
+        // ignore: use_build_context_synchronously
+        showSnackBar(
+          res,
+          context,
+        );
+      }
+      setState(() {
+        reviewController.text = "";
+      });
+    } catch (err) {
+      showSnackBar(
+        err.toString(),
+        context,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final UserModel user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -108,7 +144,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'PET CENTER',
+                                widget.snap['petCareName'].toString(),
                                 style: TextStyle(
                                     color: const Color(0xff3F4765),
                                     fontSize: 19.sp,
@@ -127,7 +163,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     size: 15.w,
                                   ),
                                   Text(
-                                    'New Jersey',
+                                    'Location',
                                     style: TextStyle(
                                         color: const Color(0xff9CA2BC),
                                         fontSize: 14.sp,
@@ -219,7 +255,15 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                     SizedBox(
                       height: 24.h,
                     ),
-                    Text(widget.description),
+                    Text(
+                      widget.snap['description'].toString(),
+                      style: TextStyle(
+                          wordSpacing: 2,
+                          fontFamily: 'RobotoRegular',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.sp,
+                          color: const Color(0xff7F869E)),
+                    ),
                     SizedBox(
                       height: 25.h,
                     ),
@@ -263,9 +307,10 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                         controller: reviewController,
                         decoration: InputDecoration(
                             suffixIcon: GestureDetector(
-                                onTap: () {
-                                  print('hello');
-                                },
+                                onTap: () => postComment(
+                                      user.uid,
+                                      user.username,
+                                    ),
                                 child: const Icon(
                                   Icons.send,
                                   color: Color(0xff989DB1),
@@ -284,6 +329,30 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                     SizedBox(
                       height: 24.h,
                     ),
+                    // StreamBuilder(
+                    //   stream: FirebaseFirestore.instance
+                    //       .collection('services')
+                    //       .doc(widget.snap['postId'].toString())
+                    //       .collection('comments')
+                    //       .snapshots(),
+                    //   builder: (context,
+                    //       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                    //           snapshot) {
+                    //     if (snapshot.connectionState ==
+                    //         ConnectionState.waiting) {
+                    //       return const Center(
+                    //         child: CircularProgressIndicator(),
+                    //       );
+                    //     }
+
+                    //     return ListView.builder(
+                    //       itemCount: snapshot.data!.docs.length,
+                    //       itemBuilder: (ctx, index) => CommentCard(
+                    //         snap: snapshot.data!.docs[index],
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),
@@ -329,7 +398,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                             fontSize: 14.sp),
                       ),
                       Text(
-                        'ICIC',
+                        widget.snap['username'].toString(),
                         style: TextStyle(
                             color: const Color(0xffC562FD),
                             fontFamily: 'RobotoRegular',

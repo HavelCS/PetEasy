@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grow_pet/provider/user_provider.dart';
 import 'package:grow_pet/resource/firestore_method.dart';
 import 'package:grow_pet/screens/navbar/navbar.dart';
@@ -35,7 +36,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
   bool isLoading = false;
   Uint8List? _file;
   final petTypes = ['Dog', 'Cat', 'Bird', 'Rabbit', 'Hamster'];
-  String petType = '';
+  String? petType;
+  final genders = ['Male', 'Female'];
+  String? gender;
 
   _selectImage(BuildContext parentContext) async {
     return showDialog(
@@ -94,9 +97,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
         username,
         ageController.text,
         breedController.text,
-        genderController.text,
+        gender!,
         petNameController.text,
-        petTypeController.text,
+        petType!,
       );
       if (res == "success") {
         setState(() {
@@ -189,13 +192,39 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 ),
                 TextFieldDialog(
                     hinttext: 'Pet’s name', controller: petNameController),
-                DropdownButton(
-                    value: petType,
-                    isExpanded: true,
-                    items: petTypes.map(buildMenuItem).toList(),
-                    onChanged: (value) => setState(() {
-                          petType = value;
-                        })),
+                Container(
+                  width: 350.w,
+                  height: 59.h,
+                  padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.r),
+                      color: Colors.white,
+                      border: Border.all(
+                          width: 1.w, color: const Color(0xffE5E8F1))),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                        icon: const Icon(
+                          FontAwesomeIcons.angleDown,
+                          size: 15,
+                          color: Color(0xff45485B),
+                        ),
+                        hint: Text('Service Type',
+                            style: TextStyle(
+                                color: const Color(0xff7D8893),
+                                fontSize: 14.sp,
+                                fontFamily: 'RobotoRegular',
+                                fontWeight: FontWeight.w400)),
+                        isExpanded: true,
+                        value: petType,
+                        items: petTypes.map(buildMenuItem).toList(),
+                        onChanged: (value) => setState(() {
+                              petType = value;
+                            })),
+                  ),
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
                 TextFieldDialog(
                   hinttext: 'Pet species',
                   controller: breedController,
@@ -204,13 +233,41 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                   hinttext: 'Age',
                   controller: ageController,
                 ),
-                TextFieldDialog(
-                  hinttext: 'Gender',
-                  controller: genderController,
+                Container(
+                  width: 350.w,
+                  height: 59.h,
+                  padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.r),
+                      color: Colors.white,
+                      border: Border.all(
+                          width: 1.w, color: const Color(0xffE5E8F1))),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                        icon: const Icon(
+                          FontAwesomeIcons.angleDown,
+                          size: 15,
+                          color: Color(0xff45485B),
+                        ),
+                        hint: Text('Gender',
+                            style: TextStyle(
+                                color: const Color(0xff7D8893),
+                                fontSize: 14.sp,
+                                fontFamily: 'RobotoRegular',
+                                fontWeight: FontWeight.w400)),
+                        isExpanded: true,
+                        value: gender,
+                        items: genders.map(buildMenuItem).toList(),
+                        onChanged: (value) => setState(() {
+                              gender = value;
+                            })),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.h),
                   child: Container(
                     width: double.infinity,
                     height: 120.h,

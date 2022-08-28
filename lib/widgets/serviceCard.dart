@@ -59,6 +59,8 @@ class _ServiceCardState extends State<ServiceCard> {
             Padding(
               padding: EdgeInsets.only(left: 20.w, right: 15.w),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
                     child: Row(
@@ -69,14 +71,14 @@ class _ServiceCardState extends State<ServiceCard> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(widget.name,
-                                  style: TextStyle(
-                                      color: const Color(
-                                        0xff3F4765,
-                                      ),
-                                      fontFamily: 'RobotoRegular',
-                                      fontSize: 19.sp,
-                                      fontWeight: FontWeight.w600)),
+                              Text(
+                                widget.name,
+                                style: TextStyle(
+                                    color: const Color(0xff3F4765),
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'RobotoRegular'),
+                              ),
                               SizedBox(
                                 height: 7.h,
                               ),

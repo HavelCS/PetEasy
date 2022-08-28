@@ -70,13 +70,13 @@ class FireStoreMethods {
 
         ServiceModel service = ServiceModel(
             uid: uid,
-            postId: postId,
             username: username,
             description: description,
             petCareName: petCareName,
             serviceType: serviceType,
             shopImage: photoUrl,
-            tags: tags);
+            tags: tags,
+            postId: postId);
 
         _firestore.collection('services').doc(postId).set(service.toJson());
 
@@ -84,6 +84,52 @@ class FireStoreMethods {
       }
     } catch (error) {
       res = error.toString();
+    }
+    return res;
+  }
+
+  // Post comment
+  Future<String> postComment(
+    String postId,
+    String text,
+    String uid,
+    String name,
+  ) async {
+    String res = "Some error occurred";
+    try {
+      if (text.isNotEmpty) {
+        // if the likes list contains the user uid, we need to remove it
+
+        String commentId = const Uuid().v1();
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('comments')
+            .doc(commentId)
+            .set({
+          'name': name,
+          'uid': uid,
+          'text': text,
+          'commentId': commentId,
+          'datePublished': DateTime.now(),
+        });
+        res = 'success';
+      } else {
+        res = "Please enter text";
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  Future<String> deletePost(String postId) async {
+    String res = "Some error occurred";
+    try {
+      await _firestore.collection('posts').doc(postId).delete();
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
     }
     return res;
   }

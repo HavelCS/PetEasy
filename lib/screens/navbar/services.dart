@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grow_pet/constants/donations.dart';
@@ -14,6 +15,8 @@ class ListServices extends StatefulWidget {
 }
 
 class _ListServicesState extends State<ListServices> {
+  final CollectionReference _adoptions =
+      FirebaseFirestore.instance.collection('services');
   int colorindex = 0;
   @override
   Widget build(BuildContext context) {
@@ -130,66 +133,54 @@ class _ListServicesState extends State<ListServices> {
                   SizedBox(
                     height: 41.h,
                   ),
-                  ListView.builder(
-                      padding: const EdgeInsets.only(top: 0, bottom: 80),
-                      itemCount: donations.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: ((context, index) {
-                        var donation = donations[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return ServiceDetails(
-                                  tags: const [
-                                    'Grooming',
-                                    'Haircut',
-                                    'Training',
-                                    'Pet Care',
-                                    'Spa',
-                                    'Nail cutting'
-                                  ],
-                                  description: donation.description,
+                  StreamBuilder(
+                      stream: _adoptions.snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                        if (streamSnapshot.hasData) {
+                          return ListView.builder(
+                              padding:
+                                  const EdgeInsets.only(top: 0, bottom: 80),
+                              itemCount: streamSnapshot.data!.docs.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: ((context, index) {
+                                final DocumentSnapshot documentSnapshot =
+                                    streamSnapshot.data!.docs[index];
+                                var donation = donations[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return ServiceDetails(
+                                          snap: streamSnapshot.data!.docs[index]
+                                              .data(),
+                                          tags: const [
+                                            'Grooming',
+                                            'Haircut',
+                                            'Training',
+                                            'Pet Care',
+                                            'Spa',
+                                            'Nail cutting'
+                                          ],
+                                        );
+                                      },
+                                    ));
+                                  },
+                                  child: ServiceCard(
+                                    description:
+                                        documentSnapshot['description'],
+                                    imagepath: documentSnapshot['shopImage'],
+                                    location: donation.location,
+                                    name: documentSnapshot['petCareName'],
+                                  ),
                                 );
-                              },
-                            ));
-                          },
-                          child: ServiceCard(
-                              description: donation.description,
-                              imagepath:
-                                  'https://static.businessworld.in/article/article_extra_large_image/1529408175_0Gczo2_petsutra.jpg',
-                              location: donation.location,
-                              name: donation.petName),
-                        );
-                        // return GestureDetector(
-                        //   onTap: (() {
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: (context) => DetailsScreen(
-                        //                   age: donation.age,
-                        //                   breed: donation.breed,
-                        //                   gender: donation.gender,
-                        //                   location: donation.location,
-                        //                   name: donation.petName,
-                        //                   imagepath: donation.userpfp,
-                        //                   description: donation.description,
-                        //                   ownerName: donation.ownerName,
-                        //                   userpfp: donation.userpfp,
-                        //                 )));
-                        //   }),
-                        //   child: DonationRequestCard(
-                        //     age: donation.age,
-                        //     breed: donation.breed,
-                        //     gender: donation.gender,
-                        //     location: donation.location,
-                        //     name: donation.petName,
-                        //     imagepath: donation.userpfp,
-                        //   ),
-                        // );
-                      }))
+                              }));
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      }),
                 ],
               ),
             ),

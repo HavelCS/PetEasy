@@ -2,11 +2,18 @@
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:grow_pet/model/user_model.dart';
+import 'package:grow_pet/resource/firestore_method.dart';
 import 'package:grow_pet/util/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:grow_pet/util/utils.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/user_provider.dart';
 
 class DonationRequestCard extends StatefulWidget {
   final String imagepath, breed, gender, age, name, location;
+  final snap;
 
   const DonationRequestCard(
       {Key? key,
@@ -15,7 +22,8 @@ class DonationRequestCard extends StatefulWidget {
       required this.breed,
       required this.gender,
       required this.location,
-      required this.name})
+      required this.name,
+      required this.snap})
       : super(key: key);
 
   @override
@@ -23,8 +31,20 @@ class DonationRequestCard extends StatefulWidget {
 }
 
 class _DonationRequestCardState extends State<DonationRequestCard> {
+  deletePost(String postId) async {
+    try {
+      await FireStoreMethods().deletePost(postId);
+    } catch (err) {
+      showSnackBar(
+        err.toString(),
+        context,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final UserModel user = Provider.of<UserProvider>(context).getUser;
     return Stack(
       children: [
         SizedBox(
@@ -42,6 +62,51 @@ class _DonationRequestCardState extends State<DonationRequestCard> {
                     image: DecorationImage(
                         image: NetworkImage(widget.imagepath),
                         fit: BoxFit.fitWidth)),
+                child: widget.snap['uid'].toString() == user.uid
+                    ? IconButton(
+                        onPressed: () {
+                          showDialog(
+                            useRootNavigator: false,
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: ListView(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16),
+                                    shrinkWrap: true,
+                                    children: [
+                                      'Delete',
+                                    ]
+                                        .map(
+                                          (e) => InkWell(
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12,
+                                                        horizontal: 16),
+                                                child: Text(e),
+                                              ),
+                                              onTap: () {
+                                                deletePost(
+                                                  widget.snap['postId']
+                                                      .toString(),
+                                                );
+                                                // remove the dialog box
+                                                Navigator.of(context).pop();
+                                              }),
+                                        )
+                                        .toList()),
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.more_vert,
+                          size: 20,
+                          color: Colors.red,
+                        ),
+                      )
+                    : Container(),
               ),
             ],
           ),

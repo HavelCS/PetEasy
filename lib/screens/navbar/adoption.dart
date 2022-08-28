@@ -248,6 +248,8 @@ class _AdoptionScreenState extends State<AdoptionScreen> {
                                               )));
                                 }),
                                 child: DonationRequestCard(
+                                    snap:
+                                        streamSnapshot.data!.docs[index].data(),
                                     age: documentSnapshot['age'],
                                     breed: documentSnapshot['breed'],
                                     gender: documentSnapshot['gender'],

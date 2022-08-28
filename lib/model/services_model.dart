@@ -25,6 +25,7 @@ class ServiceModel {
         "description": description,
         "serviceType": serviceType,
         "shopImage": shopImage,
-        "petCareName": petCareName
+        "petCareName": petCareName,
+        "postId": postId
       };
 }
